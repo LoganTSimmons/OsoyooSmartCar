@@ -1,0 +1,6 @@
+{
+    "sketch": "OsoyooSmartCar.ino",
+    "port": "COM5",
+    "board": "arduino:avr:uno",
+    "output": "C:\\Users\\Logan T Simmons\\OneDrive\\Documents\\Project Files\\OutputPath"
+}
