@@ -16,8 +16,8 @@
 
 #define SERVO_PIN     9  //servo connect to D9
 
-#define Echo_PIN    2 // Ultrasonic Echo pin connect to D11
-#define Trig_PIN    10  // Ultrasonic Trig pin connect to D12
+#define Echo_PIN    11 // Ultrasonic Echo pin connect to D11
+#define Trig_PIN    12  // Ultrasonic Trig pin connect to D12
 
 #define BUZZ_PIN     13
 #define FAST_SPEED  250     //both sides of the motor speed
