@@ -1,26 +1,18 @@
-/*  ___   ___  ___  _   _  ___   ___   ____ ___  ____  
- * / _ \ /___)/ _ \| | | |/ _ \ / _ \ / ___) _ \|    \ 
- *| |_| |___ | |_| | |_| | |_| | |_| ( (__| |_| | | | |
- * \___/(___/ \___/ \__  |\___/ \___(_)____)___/|_|_|_|
- *                  (____/ 
- * Arduino Smart Car Tutorial Lesson 5
+/* 
  * Tutorial URL http://osoyoo.com/2018/12/19/osoyoo-robot-car-kit-lesson-4-obstacle-avoidance-robot-car/
  * CopyRight www.osoyoo.com
-
- * This project will show you how to make Osoyoo robot car in auto drive mode and avoid obstacles
- *   
- * 
  */
+
 #include <Servo.h>
 /*Declare L298N Dual H-Bridge Motor Controller directly since there is not a library to load.*/
 //Define L298N Dual H-Bridge Motor Controller Pins
-#define speedPinR 3   // RIGHT PWM pin connect MODEL-X ENA
-#define RightDirectPin1  12    //  Right Motor direction pin 1 to MODEL-X IN1 
-#define RightDirectPin2  11    // Right Motor direction pin 2 to MODEL-X IN2
+#define speedPinR 5   // RIGHT PWM pin connect MODEL-X ENA
+#define RightDirectPin1  2    //  Right Motor direction pin 1 to MODEL-X IN1 
+#define RightDirectPin2  4    // Right Motor direction pin 2 to MODEL-X IN2
 #define speedPinL 6        //  Left PWM pin connect MODEL-X ENB
 #define LeftDirectPin1  7    // Left Motor direction pin 1 to MODEL-X IN3
 #define LeftDirectPin2  8   ///Left Motor direction pin 1 to MODEL-X IN4
-#define LPT 2 // scan loop coumter
+#define LPT 2 // scan loop counter
 
 #define SERVO_PIN     9  //servo connect to D9
 
