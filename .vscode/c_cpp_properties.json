@@ -18,6 +18,7 @@
                 "C:\\Arduino\\hardware\\arduino\\avr\\cores\\arduino",
                 "C:\\Arduino\\hardware\\arduino\\avr\\variants\\standard",
                 "C:\\Users\\Logan T Simmons\\Documents\\Arduino\\libraries\\Servo\\src",
+                "C:\\Arduino\\libraries\\Peizo",
                 "c:\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include",
                 "c:\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include-fixed",
                 "c:\\arduino\\hardware\\tools\\avr\\avr\\include"

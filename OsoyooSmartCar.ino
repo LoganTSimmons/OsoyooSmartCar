@@ -9,6 +9,10 @@
 
 
 void setup() {
+
+  Serial.begin(9600);
+  
+
   /*setup L298N pin mode*/
   pinMode(RightDirectPin1, OUTPUT); 
   pinMode(RightDirectPin2, OUTPUT); 
@@ -16,26 +20,32 @@ void setup() {
   pinMode(LeftDirectPin1, OUTPUT);
   pinMode(LeftDirectPin2, OUTPUT); 
   pinMode(speedPinR, OUTPUT); 
-  stop_Stop();//stop move
+  stop();//stop move
+
   /*init HC-SR04*/
   pinMode(Trig_PIN, OUTPUT); 
-  pinMode(Echo_PIN,INPUT); 
+  pinMode(Echo_PIN,INPUT);
+  digitalWrite(Trig_PIN,LOW); 
+
   /*init buzzer*/
-  pinMode(BUZZ_PIN, OUTPUT);
-  digitalWrite(BUZZ_PIN, HIGH);  
+  pinMode(peizoPin, OUTPUT);
+  digitalWrite(peizoPin, HIGH);  
   buzz_OFF(); 
 
-  digitalWrite(Trig_PIN,LOW);
+  
   /*init servo*/
   head.attach(SERVO_PIN); 
   head.write(90);
-   delay(2000);
-  
-  Serial.begin(9600);
+  delay(2000);
+
+  playGreatingMelody(); 
+  testDance();
+ 
  
  
 }
 
-void loop() {
-  auto_avoidance();
+void loop() 
+{
+  collisionAvoidance();
 }
