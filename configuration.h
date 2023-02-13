@@ -1,4 +1,6 @@
 
+#include "pitches.h"
+
 /*Declare L298N Dual H-Bridge Motor Controller directly since there is not a library to load.*/
 //Define L298N Dual H-Bridge Motor Controller Pins
 #define speedPinR 5   // RIGHT PWM pin connect MODEL-X ENA
