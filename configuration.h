@@ -33,7 +33,7 @@ const int sidedistancelimit = 30; //minimum distance in cm to obstacles at both 
 int distance;
 int numcycles = 0;
 //const int turntime = 250; //Time the robot spends turning (miliseconds)
-const int backtime = 300; //Time the robot spends backing up? (miliseconds)
+const int backtime = 500; //Time the robot spends backing up (miliseconds)
 const int servoTurnPause = 1000;
 int turnRatio=10;
 int degree;
