@@ -6,7 +6,7 @@ void pause(int pauseTime)
   
   timeElapsed = millis();
   while (millis() < timeElapsed + pauseTime){}
-  if(serialDebug==1)
+  if(serialDebug==0)
     {
       Serial.print("Pausing for: "); 
       Serial.print(pauseTime);
@@ -23,7 +23,7 @@ void microPause(int pauseTime)
  {
   timeElapsed = micros();
   while (micros() < timeElapsed + pauseTime){}
-  if(serialDebug==1)
+  if(serialDebug==0)
     {
       Serial.print("Pausing for: "); 
       Serial.print(pauseTime);
@@ -154,9 +154,9 @@ void playGreatingMelody()
 int watch(){
   long echo_distance;
   digitalWrite(Trig_PIN,LOW);
-  delayMicroseconds(5);                                                                              
+  microPause(5);                                                                              
   digitalWrite(Trig_PIN,HIGH);
-  delayMicroseconds(15);
+  microPause(15);
   digitalWrite(Trig_PIN,LOW);
   echo_distance=pulseIn(Echo_PIN,HIGH);
   echo_distance=echo_distance*0.01657; //how far away is the object in cm
@@ -180,7 +180,7 @@ void lookCenter()
         playErrorMelody();
         obstacle_status  =obstacle_status | B100;
       }
-    if(serialDebug==1)
+    if(serialDebug==0)
     {
       Serial.print("Center Scan distance: ");
       Serial.println(centerscanval);
@@ -203,7 +203,7 @@ void lookFullLeft()
         playErrorMelody();
         obstacle_status = obstacle_status | B10000;
       }
-    if(serialDebug==1)
+    if(serialDebug==0)
       {
         Serial.print("Full left Scan distance: ");
         Serial.println(leftscanval);
@@ -226,7 +226,7 @@ void lookHalfLeft()
         playErrorMelody();
         obstacle_status = obstacle_status | B1000;
       }
-    if(serialDebug==1)
+    if(serialDebug==0)
       {
         Serial.print("Half left Scan distance: ");
         Serial.println(ldiagonalscanval);
@@ -249,7 +249,7 @@ void lookFullRight()
         playErrorMelody();
         obstacle_status  = obstacle_status | B1;
       }
-    if(serialDebug==1)
+    if(serialDebug==0)
       {
         Serial.print("Full right Scan distance: ");
         Serial.println(rightscanval);
@@ -272,7 +272,7 @@ void lookHalfRight()
         playErrorMelody();
         obstacle_status = obstacle_status | B10;
       }
-    if(serialDebug==1)
+    if(serialDebug==0)
       {
         Serial.print("Half Right Scan distance: ");
         Serial.println(rdiagonalscanval);
@@ -305,6 +305,7 @@ String scanSurrounding()
   obstacle_str= String(obstacle_status,BIN);
   obstacle_str= obstacle_str.substring(1,6);
   return obstacle_str;
+  
 }
 
 /* commenting this out for now since its not in use
@@ -323,24 +324,59 @@ void collisionAvoidance()
   distance = watch(); // use the watch() function to see if anything is ahead (when the robot is just moving forward and not looking around it will test the distance in front)
     
     String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
-    if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100"  || obstacle_sign=="01110" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
+    if(serialDebug==1)
       {
+        Serial.print("Obstacle Sign: ");
+        Serial.println(obstacle_sign);
+      }
+    if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
+      {
+        if(serialDebug==1)
+          { 
+            Serial.println("Obstacle Left");
+            Serial.println("Turning Right");
+            Serial.println("");
+          }
         turnRight(45);
       }
     if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  )
       {
+        if(serialDebug==1)
+          { 
+            Serial.println("Obstacle Right");
+            Serial.println("Turning Left");
+            Serial.println("");
+          }
         turnLeft(45);
       }
-    if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11111" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
+    if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11111" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
       {
+        if(serialDebug==1)
+          { 
+            Serial.println("Obstacle Left, Right, and Center");
+            Serial.println("Backing Up");
+            Serial.println("");
+          }
         goBack();
       }
     if(distance<distancelimit)
       {  
+        if(serialDebug==1)
+          { 
+            Serial.println("Obstacle!");
+            Serial.println("Stopping");
+            Serial.println("");
+          }
         stop();
       }
     if( distance>distancelimit )
       {
+        if(serialDebug==1)
+          { 
+            Serial.println("Path clear");
+            Serial.println("Going Forward");
+            Serial.println("");
+          }
         goForward();
       }
     if(numcycles>=25)//Change this to change how long it waits to stop and look around 
@@ -354,20 +390,44 @@ void collisionAvoidance()
         Serial.print("begin str=");
         Serial.println(obstacle_sign);
         
-        if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100"  || obstacle_sign=="01110" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
+        if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
           {
+            if(serialDebug==1)
+              { 
+                Serial.println("Obstacle Left");
+                Serial.println("Turning Right");
+                Serial.println("");
+              }
             turnRight(45);
           }
         if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  )
           {
+            if(serialDebug==1)
+              { 
+                Serial.println("Obstacle Right");
+                Serial.println("Turning Left");
+                Serial.println("");
+              }
             turnLeft(45);
           }
-        if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11011" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
+        if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11011" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
           {
+            if(serialDebug==1)
+              { 
+                Serial.println("Obstacle Left, Right, and Center");
+                Serial.println("Backing Up");
+                Serial.println("");
+              }
             goBack();
           }
          if(obstacle_sign == "00000" || obstacle_sign=="10001")
           {
+            if(serialDebug==1)
+              { 
+                Serial.println("Path clear");
+                Serial.println("Going Forward");
+                Serial.println("");
+              }
             goForward();
           }
         numcycles=0; //Restart count of cycles
