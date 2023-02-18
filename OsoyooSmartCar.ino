@@ -8,7 +8,8 @@
 #include "functions.h"
 
 
-void setup() {
+void setup() 
+{
 
   Serial.begin(9600);
   
@@ -40,9 +41,7 @@ void setup() {
 
   playGreatingMelody(); 
   testDance();
- 
- 
- 
+
 }
 
 void loop() 
