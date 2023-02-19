@@ -160,13 +160,13 @@ int watch(){
   microPause(15);
   digitalWrite(Trig_PIN,LOW);
   echo_distance=pulseIn(Echo_PIN,HIGH);
-  echo_distance=echo_distance*0.01657; //how far away is the object in cm
-  return round(echo_distance);
+  echo_distance=round(echo_distance*0.01657); //how far away is the object in cm
   if(serialDebug==1)
       {
         Serial.print("Echo distance: ");
         Serial.println(echo_distance);
       }
+  return echo_distance;
 }
 
 void lookCenter()
@@ -179,9 +179,9 @@ void lookCenter()
       {
         stop();
         playErrorMelody();
-        obstacle_status  =obstacle_status | B100;
+        obstacle_status  = obstacle_status | B100;
       }
-    if(serialDebug==0)
+    if(serialDebug==1)
     {
       Serial.print("Center Scan distance: ");
       Serial.println(centerscanval);
@@ -284,15 +284,15 @@ void lookHalfRight()
       }
   }
 
+/*
 //Meassures distances to the right, left, front, left diagonal, right diagonal and asign them in cm to the variables rightscanval, 
 //leftscanval, centerscanval, ldiagonalscanval and rdiagonalscanval (there are 5 points for distance testing)
 String scanSurrounding()
 {
-  /*  obstacle_status is a binary integer, its last 5 digits stands for if there is any obstacles in 5 directions,
-  *   for example B101000 last 5 digits is 01000, which stands for Left front has obstacle, B100111 means front, 
-  *   right front and right ha
-  */
-  int obstacle_status =B100000;
+  //  obstacle_status is a binary integer, its last 5 digits stands for if there is any obstacles in 5 directions,
+  //  for example B101000 last 5 digits is 01000, which stands for Left front has obstacle, B100111 means front, 
+  // right front and right ha
+  int obstacle_status =B111111;
   lookHalfLeft();
   lookFullLeft();
   lookHalfLeft();
@@ -308,7 +308,7 @@ String scanSurrounding()
   return obstacle_str;
   
 }
-
+*/
 /* commenting this out for now since its not in use
 //change this to collisionDetected  
 void waitForSwitch()
@@ -323,120 +323,156 @@ void waitForSwitch()
 void collisionAvoidance()
 {
   distance = watch(); // use the watch() function to see if anything is ahead (when the robot is just moving forward and not looking around it will test the distance in front)
-    
-    String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
-    if(serialDebug==1)
-      {
-        Serial.print("Obstacle Sign: ");
-        Serial.println(obstacle_sign);
-      }
-    if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
-      {
-        if(serialDebug==1)
-          { 
-            Serial.println("Obstacle Left");
-            Serial.println("Turning Right");
-            Serial.println("");
-          }
-        turnRight(45);
-      }
-    if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  )
-      {
-        if(serialDebug==1)
-          { 
-            Serial.println("Obstacle Right");
-            Serial.println("Turning Left");
-            Serial.println("");
-          }
-        turnLeft(45);
-      }
-    if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11111" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
-      {
-        if(serialDebug==1)
-          { 
-            Serial.println("Obstacle Left, Right, and Center");
-            Serial.println("Backing Up");
-            Serial.println("");
-          }
-        goBack();
-      }
-    if(distance<distancelimit)
-      {  
-        if(serialDebug==1)
-          { 
-            Serial.println("Obstacle!");
-            Serial.println("Stopping");
-            Serial.println("");
-          }
-        stop();
-      }
-    if( distance>distancelimit )
-      {
-        if(serialDebug==1)
-          { 
-            Serial.println("Path clear");
-            Serial.println("Going Forward");
-            Serial.println("");
-          }
-        goForward();
-      }
-    if(numcycles>=25)//Change this to change how long it waits to stop and look around 
-      { 
-        stop();
-        distance=watch();
-        if(distance<distancelimit)//i think this will fix the back then GO FORWARD FAST bug weve been seeing only periodically
-          {
-            String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
-            if(serialDebug==1)
-              {
-                Serial.print("Obstacle Sign: ");
-                Serial.println(obstacle_sign);
-              }
-          }
-        
-        if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
-          {
-            if(serialDebug==1)
-              { 
-                Serial.println("Obstacle Left");
-                Serial.println("Turning Right");
-                Serial.println("");
-              }
-            turnRight(45);
-          }
-        if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  )
-          {
-            if(serialDebug==1)
-              { 
-                Serial.println("Obstacle Right");
-                Serial.println("Turning Left");
-                Serial.println("");
-              }
-            turnLeft(45);
-          }
-        if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11011" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  )
-          {
-            if(serialDebug==1)
-              { 
-                Serial.println("Obstacle Left, Right, and Center");
-                Serial.println("Backing Up");
-                Serial.println("");
-              }
-            goBack();
-          }
-         if(obstacle_sign == "00000" || obstacle_sign=="10001")
-          {
-            if(serialDebug==1)
-              { 
-                Serial.println("Path clear");
-                Serial.println("Going Forward");
-                Serial.println("");
-              }
-            goForward();
-          }
-        numcycles=0; //Restart count of cycles
-      }
-    ++numcycles;
+
+  //  obstacle_status is a binary integer, its last 5 digits stands for if there is any obstacles in 5 directions,
+  //  for example B101000 last 5 digits is 01000, which stands for Left front has obstacle, B100111 means front, 
+  // right front and right ha
+  int obstacle_status =B100000;
+  lookHalfLeft();
+  lookFullLeft();
+  lookHalfLeft();
+  lookCenter();
+  lookHalfRight();
+  lookFullRight();
+  lookHalfRight();
+  lookCenter();
+  
+  //return 5-character string standing for 5 direction obstacle status
+  obstacle_str= String(obstacle_status,BIN);
+  obstacle_str= obstacle_str.substring(1,6);
+  
+  String obstacle_sign=obstacle_str; 
+  //String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
+  if(serialDebug==1)
+    {
+      Serial.print("Obstacle Sign: ");
+      Serial.println(obstacle_sign);
+    }
+  if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" ) // turn right
+    {
+      if(serialDebug==1)
+        { 
+          Serial.println("Obstacle Left");
+          Serial.println("Turning Right");
+          Serial.println("");
+        }
+      turnRight(45);
+    }
+  if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  ) // turn left
+    {
+      if(serialDebug==1)
+        { 
+          Serial.println("Obstacle Right");
+          Serial.println("Turning Left");
+          Serial.println("");
+        }
+      turnLeft(45);
+    }
+  if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11111" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  ) // go back
+    {
+      if(serialDebug==1)
+        { 
+          Serial.println("Obstacle Left, Right, and Center");
+          Serial.println("Backing Up");
+          Serial.println("");
+        }
+      goBack();
+    }
+  if(distance<distancelimit) // stop
+    {  
+      if(serialDebug==1)
+        { 
+          Serial.println("Obstacle!");
+          Serial.println("Stopping");
+          Serial.println("");
+        }
+      stop();
+    }
+  if( distance>distancelimit ) // go forward
+    {
+      if(serialDebug==1)
+        { 
+          Serial.println("Path clear");
+          Serial.println("Going Forward");
+          Serial.println("");
+        }
+      goForward();
+    }
+  if(numcycles>=25)// how many cycles it waits to stop and look around 
+    { 
+      stop();
+      distance=watch();
+      if(distance<distancelimit)//i think this will fix the back then GO FORWARD FAST bug weve been seeing only periodically
+        {
+          //  obstacle_status is a binary integer, its last 5 digits stands for if there is any obstacles in 5 directions,
+          //  for example B101000 last 5 digits is 01000, which stands for Left front has obstacle, B100111 means front, 
+          // right front and right ha
+          int obstacle_status =B111111;
+          lookHalfLeft();
+          lookFullLeft();
+          lookHalfLeft();
+          lookCenter();
+          lookHalfRight();
+          lookFullRight();
+          lookHalfRight();
+          lookCenter();
+          
+          //return 5-character string standing for 5 direction obstacle status
+          obstacle_str= String(obstacle_status,BIN);
+          obstacle_str= obstacle_str.substring(1,6);
+          
+          String obstacle_sign=obstacle_str;
+          //String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
+          if(serialDebug==1)
+            {
+              Serial.print("Obstacle Sign: ");
+              Serial.println(obstacle_sign);
+            }
+        }
+      
+      if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" ) // turn right
+        {
+          if(serialDebug==1)
+            { 
+              Serial.println("Obstacle Left");
+              Serial.println("Turning Right");
+              Serial.println("");
+            }
+          turnRight(45);
+        }
+      if(obstacle_sign=="00111" || obstacle_sign=="00011"  || obstacle_sign=="00101" || obstacle_sign=="00110" || obstacle_sign=="01010"  || obstacle_sign=="00010"  ) // turn left 
+        {
+          if(serialDebug==1)
+            { 
+              Serial.println("Obstacle Right");
+              Serial.println("Turning Left");
+              Serial.println("");
+            }
+          turnLeft(45);
+        }
+      if(  obstacle_sign=="01111" ||  obstacle_sign=="10111" ||  obstacle_sign=="11011" || obstacle_sign=="01110" ||  obstacle_sign=="11101"  ||  obstacle_sign=="11110"  ) // go back 
+        {
+          if(serialDebug==1)
+            { 
+              Serial.println("Obstacle Left, Right, and Center");
+              Serial.println("Backing Up");
+              Serial.println("");
+            }
+          goBack();
+        }
+      if(obstacle_sign == "00000" || obstacle_sign=="10001") // go forward 
+        {
+          if(serialDebug==1)
+            { 
+              Serial.println("Path clear");
+              Serial.println("Going Forward");
+              Serial.println("");
+            }
+          goForward();
+        }
+      numcycles=0; //Restart count of cycles
+    }
+  ++numcycles;
 }
 
 void testDance()
