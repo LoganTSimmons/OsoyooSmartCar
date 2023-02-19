@@ -387,9 +387,12 @@ void collisionAvoidance()
         if(distance<distancelimit)//i think this will fix the back then GO FORWARD FAST bug weve been seeing only periodically
           {
             String obstacle_sign=scanSurrounding(); // 5 digits of obstacle_sign binary value means the 5 direction obstacle status
+            if(serialDebug==1)
+              {
+                Serial.print("Obstacle Sign: ");
+                Serial.println(obstacle_sign);
+              }
           }
-        Serial.print("begin str=");
-        Serial.println(obstacle_sign);
         
         if( obstacle_sign=="11100" || obstacle_sign=="11000"  || obstacle_sign=="10100"  || obstacle_sign=="01100" ||obstacle_sign=="00100"  ||obstacle_sign=="01000" )
           {
